@@ -1,23 +1,28 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-
+import { XMLParser } from "fast-xml-parser";
+const parser = new XMLParser();
 export const useUploadStore = defineStore("upload", () => {
-  let legendsxml = null;
+  const legendsxml = ref<File | null>(null);
   const legendsfilename = ref("");
-  let legendsplusxml = null;
+  const legendsplusxml = ref<File | null>(null);
   const legendsplusfilename = ref("");
 
   const handleFile = (event: Event) => {
     const target = event.target as HTMLInputElement;
     const file = target.files?.item(0);
     if (file) {
-      if (target.name === "legends") {
-        legendsxml = file;
-        legendsfilename.value = file.name;
-      } else {
-        legendsplusxml = file;
-        legendsplusfilename.value = file.name;
-      }
+      file.text().then((text) => {
+        let data = parser.parse(text);
+        console.log(data);
+        if (target.name === "legends") {
+          legendsxml.value = data;
+          legendsfilename.value = file.name;
+        } else {
+          legendsplusxml.value = data;
+          legendsplusfilename.value = file.name;
+        }
+      });
     }
   };
 
