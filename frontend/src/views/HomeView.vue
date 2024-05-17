@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useUploadStore } from "@/stores/upload";
 import Upload from "@/components/Upload.vue";
+import Selector from "@/components/Selector.vue";
 const uploadStore = useUploadStore();
 </script>
 
@@ -12,8 +13,7 @@ const uploadStore = useUploadStore();
       "
     />
     <div v-else>
-      <h1>Home</h1>
-      <p>Upload successful!</p>
+      <Selector />
     </div>
   </main>
 </template>

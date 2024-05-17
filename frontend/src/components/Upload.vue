@@ -17,7 +17,7 @@ const uploadStore = useUploadStore();
           <span class="file-icon">
             <i class="fas fa-upload"></i>
           </span>
-          <span class="file-label">No file uploaded</span>
+          <span class="file-label">Upload</span>
         </span>
         <span class="file-name">{{
           uploadStore.legendsfilename
@@ -43,7 +43,7 @@ const uploadStore = useUploadStore();
           <span class="file-icon">
             <i class="fas fa-upload"></i>
           </span>
-          <span class="file-label">No file uploaded</span>
+          <span class="file-label">Upload</span>
         </span>
         <span class="file-name">{{
           uploadStore.legendsplusfilename

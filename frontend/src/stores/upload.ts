@@ -3,9 +3,9 @@ import { ref } from "vue";
 import { XMLParser } from "fast-xml-parser";
 const parser = new XMLParser();
 export const useUploadStore = defineStore("upload", () => {
-  const legendsxml = ref<File | null>(null);
+  const legendsxml = ref<any | null>(null);
   const legendsfilename = ref("");
-  const legendsplusxml = ref<File | null>(null);
+  const legendsplusxml = ref<any | null>(null);
   const legendsplusfilename = ref("");
 
   const handleFile = (event: Event) => {
