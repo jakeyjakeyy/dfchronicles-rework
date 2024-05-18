@@ -4,6 +4,9 @@ import { useUploadStore } from "@/stores/upload";
 const uploadStore = useUploadStore();
 let typeCounts: Record<string, number> = {};
 const selectedType = ref<string | null>(null);
+const selection = ref<any | null>(null);
+const objData = ref<any | null>(null);
+import loadHistoricalEventCollections from "../utils/historicaleventcol";
 
 const countTypes = () => {
   uploadStore.legendsxml.df_world.historical_event_collections.historical_event_collection.forEach(
@@ -20,6 +23,15 @@ const countTypes = () => {
 onMounted(countTypes);
 function selectType(type: any) {
   selectedType.value = String(type);
+}
+
+function selectEvent(event: any) {
+  selection.value = event;
+  objData.value = loadHistoricalEventCollections(
+    event,
+    uploadStore.legendsxml.df_world,
+    uploadStore.legendsplusxml.df_world
+  );
 }
 </script>
 
@@ -49,9 +61,11 @@ function selectType(type: any) {
             .historical_event_collections.historical_event_collection"
           :key="collection.id"
         >
-          <div v-if="collection.type === selectedType">
-            <h3>{{ collection.name ? collection.name : "Unnamed Event" }}</h3>
-            <p>{{ collection.description }}</p>
+          <div
+            v-if="collection.type === selectedType"
+            @click="selectEvent(collection)"
+          >
+            <p>{{ collection.name ? collection.name : "Unnamed Event" }}</p>
           </div>
         </div>
       </div>
