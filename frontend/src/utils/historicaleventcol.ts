@@ -1,7 +1,7 @@
-// import loadHistoricalEvent from "./historicalevent";
 // import LinkSquads from "./linksquads";
 // import loadSubregion from "./subregion";
 // import getEntityData from "./entity";
+import loadHistoricalEvent from "./historicalevent";
 
 function loadHistoricalEventCollection(
   object: any,
@@ -20,8 +20,8 @@ function loadHistoricalEventCollection(
   json.startYear = object.start_year;
   json.endYear = object.end_year;
 
-  const eventcolElements = object.eventcol;
-  if (eventcolElements) {
+  const eventcolElements = Array.from(object.eventcol);
+  if (eventcolElements.length > 0) {
     var eventCollections: any = [];
     var xmlEventCols =
       legendsxml.historical_event_collections.historical_event_collection;
