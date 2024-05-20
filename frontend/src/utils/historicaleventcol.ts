@@ -207,7 +207,6 @@ function loadHistoricalEventCollection(
       legendsplusxml
     );
   }
-  console.log(json);
   return json;
 }
 

@@ -31,6 +31,24 @@ function selectEvent(event: any) {
     uploadStore.legendsxml.df_world,
     uploadStore.legendsplusxml.df_world
   );
+  console.log(objData.value);
+  const prompt = JSON.stringify(objData.value);
+  const data = fetch("http://localhost:8000/api/generate", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      prompt: objData.value,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Success:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
 }
 </script>
 

@@ -208,7 +208,8 @@ class Generate(APIView):
             gen.save()
             gen = GenerationSerializer(gen).data
             return Response({"generation": gen})
-        user = request.user
+        # user = request.user
+        user = models.User.objects.get(username="jake")  # for testing
         # model = "gpt-3.5-turbo"
         model = "gpt-4o"
         maxTokens = 3000
@@ -216,62 +217,59 @@ class Generate(APIView):
             maxTokens = 4000
         if model == "gpt-4o":
             maxTokens = 8000
-        if not user.is_authenticated:
-            return Response({"message": "Invalid token"})
+        # if not user.is_authenticated:
+        #     return Response({"message": "Invalid token"}) # off for testing
 
-        if request.data["request"] == "generate":
-            enc = tiktoken.encoding_for_model(model)
-            if len(enc.encode(request.data["prompt"])) > maxTokens:
-                return Response(
+        enc = tiktoken.encoding_for_model(model)
+        if len(enc.encode(str(request.data["prompt"]))) > maxTokens:
+            return Response(
+                {
+                    "message": f"Prompt too long {len(enc.encode(request.data['prompt']))} of {maxTokens} tokens"
+                }
+            )
+        try:
+            completion = openai.ChatCompletion.create(
+                model=model,
+                messages=[
                     {
-                        "message": f"Prompt too long {len(enc.encode(request.data['prompt']))} of 3000 tokens"
-                    }
-                )
-            try:
-                completion = openai.ChatCompletion.create(
-                    model=model,
-                    messages=[
-                        {
-                            "role": "system",
-                            "content": self.prompt,
-                        },
-                        {"role": "user", "content": request.data["prompt"]},
-                    ],
-                    temperature=0.7,
-                    top_p=0.8,
-                )
-            except openai.error.ServiceUnavailableError:
-                return Response(
-                    {"message": "OpenAI API is currently unavailable. Try again later."}
-                )
-            except openai.error.APIError:
-                return Response(
-                    {
-                        "message": "Error from OpenAI API, their servers are probably having issues. Try again later."
-                    }
-                )
-
-            # Extract title from response
-            pattern = r'"""(.*?)"""'
-            match = re.search(pattern, completion["choices"][0]["message"]["content"])
-            extracted_text = match.group(1) if match else ""
-
-            response = re.sub(
-                pattern, "", completion["choices"][0]["message"]["content"]
+                        "role": "system",
+                        "content": self.prompt,
+                    },
+                    {"role": "user", "content": str(request.data["prompt"])},
+                ],
+                temperature=0.7,
+                top_p=0.8,
+            )
+        except openai.error.ServiceUnavailableError:
+            return Response(
+                {"message": "OpenAI API is currently unavailable. Try again later."}
+            )
+        except openai.error.APIError:
+            return Response(
+                {
+                    "message": "Error from OpenAI API, their servers are probably having issues. Try again later."
+                }
             )
 
-            gen = models.Generation.objects.create(
-                user=user,
-                object=request.data["prompt"],
-                prompt=self.prompt,
-                response=completion,
-                generation=response,
-                title=extracted_text,
-            )
-            gen.save()
-            gen = GenerationSerializer(gen).data
+        # Extract title from response
+        pattern = r'"""(.*?)"""'
+        match = re.search(pattern, completion["choices"][0]["message"]["content"])
+        extracted_text = match.group(1) if match else ""
 
-            return Response({"generation": gen})
+        response = re.sub(pattern, "", completion["choices"][0]["message"]["content"])
+
+        gen = models.Generation.objects.create(
+            user=user,
+            object=request.data["prompt"],
+            prompt=self.prompt,
+            response=completion,
+            generation=response,
+            title=extracted_text,
+        )
+        gen.save()
+        gen = GenerationSerializer(gen).data
+
+        return Response({"generation": gen})
 
 
 class Register(APIView):
