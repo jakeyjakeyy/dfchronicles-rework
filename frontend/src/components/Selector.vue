@@ -18,7 +18,6 @@ const countTypes = () => {
       }
     }
   );
-  console.log(typeCounts);
 };
 onMounted(countTypes);
 function selectType(type: any) {

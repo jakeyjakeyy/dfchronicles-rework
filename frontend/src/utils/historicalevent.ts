@@ -1,5 +1,5 @@
-// import loadSubregion from "./subregion";
-// import getEntityData from "./entity";
+import loadSubregion from "./subregion";
+import getEntityData from "./entity";
 
 function loadHistoricalEvent(
   id: number,
@@ -18,8 +18,6 @@ function loadHistoricalEvent(
   ).find((event: any) => {
     return event.id === id;
   });
-  console.log(data);
-  console.log(dataplus);
   if (!data && !dataplus) {
     return null;
   }
@@ -113,7 +111,7 @@ function loadHistoricalEvent(
     }
     const attackerTagNames = ["wounder_hfid", "slayer_hfid"];
     for (let tagName of attackerTagNames) {
-      if (data.hasOwnProperty(tagName) && data[tagName] !== "-1") {
+      if (data.hasOwnProperty(tagName) && data[tagName] !== -1) {
         event.attackerFigure = getHistoricalFigureData(
           tagName,
           data,
@@ -124,7 +122,7 @@ function loadHistoricalEvent(
     }
 
     if (data.hasOwnProperty("cause")) {
-      event.cause = data.getElementsByTagName("cause")[0].value;
+      event.cause = data.cause;
     }
 
     if (data.hasOwnProperty("civ_id")) {
@@ -145,7 +143,7 @@ function loadHistoricalEvent(
     }
     if (dataplus.hasOwnProperty("stashSite")) {
       const stashSite = dataplus.stashSite;
-      if (stashSite !== "-1") {
+      if (stashSite !== -1) {
         event.postStashSite = {
           name: legendsxml.sites.site[stashSite + 1].name,
           type: legendsxml.sites.site[stashSite + 1].type,
@@ -173,9 +171,8 @@ function getHistoricalFigureData(
   legendsxml: any,
   histfigs: any
 ) {
-  console.log(data, tagName);
   let figureData = {};
-  if (data.hasOwnProperty(tagName) && data[tagName] !== "-1") {
+  if (data.hasOwnProperty(tagName) && data[tagName] !== -1) {
     const hfid = data[tagName];
     const figure = histfigs[hfid];
     if (figure.length === 0) {

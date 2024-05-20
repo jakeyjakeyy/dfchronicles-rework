@@ -14,7 +14,6 @@ export const useUploadStore = defineStore("upload", () => {
     if (file) {
       file.text().then((text) => {
         let data = parser.parse(text);
-        console.log(data);
         if (target.name === "legends") {
           legendsxml.value = data;
           legendsfilename.value = file.name;
