@@ -191,7 +191,7 @@ class User(APIView):
 
 class Generate(APIView):
     authentication_classes = [JWTAuthentication]
-    prompt = 'In a realm shaped by the intricate mechanics of the game "Dwarf Fortress", imagine yourself as a skilled archivist dedicated to preserving the rich tapestry of events and history in this unique world. Your mission is to craft an engaging and enthralling narrative using the information at your disposal. While remaining true to the established facts, infuse the story with vivid details that may not explicitly be provided to you, in order to captivate the reader.The beginning of your response should start with you creating a title for your story encased in triple quotes("""title"""). Prose: J.R.R. Tolkien meets George R.R. Martin. The story should be a blend of high fantasy and gritty realism, with a focus on character development and world-building. The narrative should be engaging, immersive, and evoke a sense of wonder and intrigue in the reader. The story should be suitable for a mature audience and may contain elements of violence, intrigue, and political machinations. Stories and events may be grandoise and epic, or mundane and personal.'
+    prompt = 'In a realm shaped by the intricate mechanics of the game "Dwarf Fortress", imagine yourself as a skilled archivist dedicated to preserving the rich tapestry of events and history in this unique world. Your mission is to craft an engaging and enthralling narrative using the information at your disposal. While remaining true to the established facts, infuse the story with vivid details that may not explicitly be provided to you, in order to captivate the reader.The story should be in Markdown format, with the first line being a title of the story with Heading Level 1(#). Prose: J.R.R. Tolkien meets George R.R. Martin. The story should be a blend of high fantasy and gritty realism, with a focus on character development and world-building. The narrative should be engaging, immersive, and evoke a sense of wonder and intrigue in the reader. The story should be suitable for a mature audience and may contain elements of violence, intrigue, and political machinations. Stories and events may be grandoise and epic, or mundane and personal.'
 
     def post(self, request):
         if not openai.api_key:
@@ -216,7 +216,7 @@ class Generate(APIView):
         if model == "gpt-4-1106-preview":
             maxTokens = 4000
         if model == "gpt-4o":
-            maxTokens = 8000
+            maxTokens = 50000
         # if not user.is_authenticated:
         #     return Response({"message": "Invalid token"}) # off for testing
 
@@ -224,7 +224,7 @@ class Generate(APIView):
         if len(enc.encode(str(request.data["prompt"]))) > maxTokens:
             return Response(
                 {
-                    "message": f"Prompt too long {len(enc.encode(request.data['prompt']))} of {maxTokens} tokens"
+                    "message": f"Prompt too long {len(enc.encode(str(request.data['prompt'])))} of {maxTokens} tokens"
                 }
             )
         try:
@@ -252,19 +252,18 @@ class Generate(APIView):
             )
 
         # Extract title from response
-        pattern = r'"""(.*?)"""'
-        match = re.search(pattern, completion["choices"][0]["message"]["content"])
-        extracted_text = match.group(1) if match else ""
+        # pattern = r'"""(.*?)"""'
+        # match = re.search(pattern, completion["choices"][0]["message"]["content"])
+        # extracted_text = match.group(1) if match else ""
 
-        response = re.sub(pattern, "", completion["choices"][0]["message"]["content"])
+        # response = re.sub(pattern, "", completion["choices"][0]["message"]["content"])
 
         gen = models.Generation.objects.create(
             user=user,
             object=request.data["prompt"],
             prompt=self.prompt,
             response=completion,
-            generation=response,
-            title=extracted_text,
+            generation=completion.choices[0].message.content,
         )
         gen.save()
         gen = GenerationSerializer(gen).data
