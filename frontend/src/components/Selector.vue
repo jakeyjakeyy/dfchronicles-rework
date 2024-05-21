@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import VueMarkdown from "vue-markdown-render";
 import { ref, onMounted } from "vue";
 import { useUploadStore } from "@/stores/upload";
 const uploadStore = useUploadStore();
@@ -6,6 +7,7 @@ let typeCounts: Record<string, number> = {};
 const selectedType = ref<string | null>(null);
 const selection = ref<any | null>(null);
 const objData = ref<any | null>(null);
+const generation = ref<any | null>(null);
 import loadHistoricalEventCollections from "../utils/historicaleventcol";
 
 const countTypes = () => {
@@ -45,6 +47,7 @@ function selectEvent(event: any) {
     .then((response) => response.json())
     .then((data) => {
       console.log("Success:", data);
+      generation.value = data.generation.generation;
     })
     .catch((error) => {
       console.error("Error:", error);
@@ -58,6 +61,10 @@ function selectEvent(event: any) {
     <h2>{{ uploadStore.legendsplusxml.df_world.altname }}</h2>
 
     <div class="grid">
+      <div v-if="generation">
+        <h2>Generated Text</h2>
+        <VueMarkdown :source="generation" />
+      </div>
       <!-- if no type is selected, show all types -->
       <div
         v-if="!selectedType"

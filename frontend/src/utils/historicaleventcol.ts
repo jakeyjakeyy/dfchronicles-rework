@@ -11,8 +11,8 @@ function loadHistoricalEventCollection(
   const json: any = {};
   const histfigs = legendsxml.historical_figures.historical_figure;
   json.world = {
-    name: legendsplusxml.name,
-    dwarvishname: legendsplusxml.altname,
+    name: legendsplusxml.altname,
+    dwarvishname: legendsplusxml.name,
   };
   json.id = object.id;
   json.startYear = object.start_year;
