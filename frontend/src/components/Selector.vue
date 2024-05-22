@@ -67,7 +67,7 @@ function selectEvent(event: any) {
       </div>
       <!-- if no type is selected, show all types -->
       <div
-        v-if="!selectedType"
+        v-else-if="!selectedType && !generation"
         v-for="type in Object.keys(typeCounts)"
         :key="type"
         class="box cell"
