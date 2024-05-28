@@ -128,9 +128,12 @@ function loadHistoricalEventCollection(
   }
 
   if (object.hasOwnProperty("attacking_hfid")) {
-    const attackinghfidElements = object.attacking_hfid;
+    let attackinghfidElements = object.attacking_hfid;
     let attackingFigures: any = [];
     let index = 0;
+    if (typeof attackinghfidElements === "number") {
+      attackinghfidElements = [attackinghfidElements];
+    }
     attackinghfidElements.forEach((attacker: any) => {
       let obj = histfigs[attacker];
       let subname = obj.name;
@@ -150,9 +153,12 @@ function loadHistoricalEventCollection(
   }
 
   if (object.hasOwnProperty("defending_hfid")) {
-    const defendinghfidElements = object.defending_hfid;
+    let defendinghfidElements = object.defending_hfid;
     let defendingFigures: any = [];
     let index = 0;
+    if (typeof defendinghfidElements === "number") {
+      defendinghfidElements = [defendinghfidElements];
+    }
     defendinghfidElements.forEach((defender: any) => {
       let obj = histfigs[defender];
       let subname = obj.name;
