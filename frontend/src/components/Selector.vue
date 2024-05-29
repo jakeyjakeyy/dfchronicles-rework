@@ -60,36 +60,38 @@ function selectEvent(event: any) {
     <h1>{{ uploadStore.legendsplusxml.df_world.name }}</h1>
     <h2>{{ uploadStore.legendsplusxml.df_world.altname }}</h2>
 
-    <div class="grid">
-      <div v-if="generation">
-        <h2>Generated Text</h2>
-        <VueMarkdown :source="generation" />
-      </div>
-      <!-- if no type is selected, show all types -->
-      <div
-        v-else-if="!selectedType && !generation"
-        v-for="type in Object.keys(typeCounts)"
-        :key="type"
-        class="box cell"
-        @click="selectType(type)"
-      >
-        <div>{{ type }}</div>
-        <p>{{ typeCounts[type] }}</p>
-      </div>
-      <!-- if a type is selected, show the events of that type -->
-      <div v-else>
-        <h2>{{ selectedType }}</h2>
-        <button @click="selectedType = null">Back</button>
+    <div class="gridContainer">
+      <div class="grid">
+        <div v-if="generation">
+          <h2>Generated Text</h2>
+          <VueMarkdown :source="generation" />
+        </div>
+        <!-- if no type is selected, show all types -->
         <div
-          v-for="collection in uploadStore.legendsxml.df_world
-            .historical_event_collections.historical_event_collection"
-          :key="collection.id"
+          v-else-if="!selectedType && !generation"
+          v-for="type in Object.keys(typeCounts)"
+          :key="type"
+          class="box cell is-col-span-2"
+          @click="selectType(type)"
         >
+          <div>{{ type }}</div>
+          <p>{{ typeCounts[type] }}</p>
+        </div>
+        <!-- if a type is selected, show the events of that type -->
+        <div v-else>
+          <h2>{{ selectedType }}</h2>
+          <button @click="selectedType = null">Back</button>
           <div
-            v-if="collection.type === selectedType"
-            @click="selectEvent(collection)"
+            v-for="collection in uploadStore.legendsxml.df_world
+              .historical_event_collections.historical_event_collection"
+            :key="collection.id"
           >
-            <p>{{ collection.name ? collection.name : "Unnamed Event" }}</p>
+            <div
+              v-if="collection.type === selectedType"
+              @click="selectEvent(collection)"
+            >
+              <p>{{ collection.name ? collection.name : "Unnamed Event" }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -104,5 +106,14 @@ function selectEvent(event: any) {
   margin: 1rem;
   justify-content: space-between;
   cursor: pointer;
+}
+
+.gridContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.grid {
+  width: 100%;
 }
 </style>

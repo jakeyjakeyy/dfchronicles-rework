@@ -9,13 +9,22 @@ const uploadStore = useUploadStore();
 <template>
   <main>
     <Nav />
-    <Upload
+    <div
+      class="homeContainer"
       v-if="
         uploadStore.legendsxml == null || uploadStore.legendsplusxml == null
       "
-    />
-    <div v-else>
+    >
+      <Upload />
+    </div>
+    <div class="homeContainer" v-else>
       <Selector />
     </div>
   </main>
 </template>
+
+<style scoped>
+.homeContainer {
+  padding: 0 10px;
+}
+</style>
