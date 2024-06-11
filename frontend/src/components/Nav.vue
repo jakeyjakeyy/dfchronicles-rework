@@ -13,18 +13,24 @@ document.addEventListener("DOMContentLoaded", () => {
       const target = el.dataset.target;
       const $target = document.getElementById(target);
 
-      // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-      el.classList.toggle("is-active");
-      $target.classList.toggle("is-active");
+      // Check if $target exists before toggling the "is-active" class
+      if ($target) {
+        el.classList.toggle("is-active");
+        $target.classList.toggle("is-active");
+      }
     });
   });
 });
+
+function navpop(route: string) {
+  console.log(route);
+}
 </script>
 
 <template>
   <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="/"> Home </a>
+      <a class="navbar-item" href="/"> DF Chronicles </a>
 
       <a
         role="button"
@@ -62,7 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-primary">
+            <a class="button is-primary" @click="navpop('register')">
               <strong>Sign up</strong>
             </a>
             <a class="button is-light"> Log in </a>

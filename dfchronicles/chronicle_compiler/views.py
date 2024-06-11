@@ -209,6 +209,7 @@ class Generate(APIView):
             gen = GenerationSerializer(gen).data
             return Response({"generation": gen})
         # user = request.user
+        # TODO remove hardcoded user
         user = models.User.objects.get(username="jake")  # for testing
         # model = "gpt-3.5-turbo"
         model = "gpt-4o"
@@ -273,15 +274,12 @@ class Generate(APIView):
 
 class Register(APIView):
     def post(self, request):
-        if request.data["request"] == "register":
-            try:
-                user = models.User.objects.create_user(
-                    username=request.data["username"].lower,
-                    password=request.data["password"],
-                )
-                user.save()
-                return Response({"message": "User created"})
-            except:
-                return Response({"message": "User already exists"})
-        else:
-            return Response({"message": "Invalid request"})
+        try:
+            user = models.User.objects.create_user(
+                username=request.data["username"].lower,
+                password=request.data["password"],
+            )
+            user.save()
+            return Response({"message": "User created"})
+        except:
+            return Response({"message": "User already exists"})

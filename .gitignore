@@ -3,3 +3,4 @@ data/
 *.pyc
 dfchronicles/chronicle_compiler/migrations/
 dfchronicles.txt
+venv/
