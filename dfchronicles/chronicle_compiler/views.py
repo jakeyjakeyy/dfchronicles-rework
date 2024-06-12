@@ -194,6 +194,7 @@ class Generate(APIView):
     prompt = 'In a realm shaped by the intricate mechanics of the game "Dwarf Fortress", imagine yourself as a skilled archivist dedicated to preserving the rich tapestry of events and history in this unique world. Your mission is to craft an engaging and enthralling narrative using the information at your disposal. While remaining true to the established facts, infuse the story with vivid details that may not explicitly be provided to you, in order to captivate the reader.The story should be in Markdown format, with the first line being a title of the story with Heading Level 1(#). Prose: J.R.R. Tolkien meets George R.R. Martin. The story should be a blend of high fantasy and gritty realism, with a focus on character development and world-building. The narrative should be engaging, immersive, and evoke a sense of wonder and intrigue in the reader. The story should be suitable for a mature audience and may contain elements of violence, intrigue, and political machinations. Stories and events may be grandoise and epic, or mundane and personal.'
 
     def post(self, request):
+        user = request.user
         if not openai.api_key:
             title = "Default Title"
             generation = "\nDefault Generation. This response is a placeholder because the OpenAI API key is not set.\nPlease set your API key in the .env file if you want to use this feature."
@@ -208,18 +209,14 @@ class Generate(APIView):
             gen.save()
             gen = GenerationSerializer(gen).data
             return Response({"generation": gen})
-        # user = request.user
-        # TODO remove hardcoded user
-        user = models.User.objects.get(username="jake")  # for testing
-        # model = "gpt-3.5-turbo"
         model = "gpt-4o"
         maxTokens = 3000
         if model == "gpt-4-1106-preview":
             maxTokens = 4000
         if model == "gpt-4o":
             maxTokens = 50000
-        # if not user.is_authenticated:
-        #     return Response({"message": "Invalid token"}) # off for testing
+        if not user.is_authenticated:
+            return Response({"message": "Invalid token"})
 
         enc = tiktoken.encoding_for_model(model)
         if len(enc.encode(str(request.data["prompt"]))) > maxTokens:

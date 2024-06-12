@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import RefreshToken from "@/utils/RefreshToken";
 import VueMarkdown from "vue-markdown-render";
 import { ref, onMounted } from "vue";
 import { useUploadStore } from "@/stores/upload";
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
 const uploadStore = useUploadStore();
 let typeCounts: Record<string, number> = {};
 const selectedType = ref<string | null>(null);
@@ -39,14 +42,20 @@ function selectEvent(event: any) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      Authorization: `JWT ${cookies.get("access_token")}`,
     },
     body: JSON.stringify({
       prompt: objData.value,
     }),
   })
     .then((response) => response.json())
-    .then((data) => {
-      console.log("Success:", data);
+    .then(async (data) => {
+      if (data.message === "Invalid token" || data.code === "token_not_valid") {
+        const refresh: any = await RefreshToken();
+        console.log(refresh);
+        if (refresh.message === "Token refreshed") selectEvent(event);
+        else alert("Please log in again");
+      }
       generation.value = data.generation.generation;
     })
     .catch((error) => {
