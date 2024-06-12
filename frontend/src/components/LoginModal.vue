@@ -28,14 +28,16 @@ const submitForm = async () => {
   cookies.set("access_token", data.access);
   cookies.set("refresh_token", data.refresh);
   loggedin.value = true;
-  window.location.reload();
+  // close all modals
+
+  // window.location.reload();
 };
 
 const handleLogout = () => {
   cookies.remove("access_token");
   cookies.remove("refresh_token");
   loggedin.value = false;
-  window.location.reload();
+  // window.location.reload();
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -144,4 +146,8 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 </template>
 
-<style></style>
+<style>
+.login-modal {
+  margin-right: 1rem;
+}
+</style>

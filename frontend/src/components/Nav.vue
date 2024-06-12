@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LoginModal from "./LoginModal.vue";
 document.addEventListener("DOMContentLoaded", () => {
   // Get all "navbar-burger" elements
   const $navbarBurgers = Array.prototype.slice.call(
@@ -21,10 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-
-function navpop(route: string) {
-  console.log(route);
-}
 </script>
 
 <template>
@@ -68,10 +65,10 @@ function navpop(route: string) {
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-primary" @click="navpop('register')">
+            <a class="button is-primary">
               <strong>Sign up</strong>
             </a>
-            <a class="button is-light"> Log in </a>
+            <LoginModal />
           </div>
         </div>
       </div>
