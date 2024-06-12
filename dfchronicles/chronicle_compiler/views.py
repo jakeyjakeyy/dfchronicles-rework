@@ -276,7 +276,7 @@ class Register(APIView):
     def post(self, request):
         try:
             user = models.User.objects.create_user(
-                username=request.data["username"].lower,
+                username=request.data["username"].lower(),
                 password=request.data["password"],
             )
             user.save()
