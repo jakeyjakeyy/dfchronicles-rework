@@ -12,6 +12,21 @@ if (cookies.get("access_token") && cookies.get("refresh_token")) {
   loggedin.value = true;
 }
 
+// Functions to open and close a modal
+function openModal($el: any) {
+  $el.classList.add("is-active");
+}
+
+function closeModal($el: any) {
+  $el.classList.remove("is-active");
+}
+
+function closeAllModals() {
+  (document.querySelectorAll(".modal") || []).forEach(($modal) => {
+    closeModal($modal);
+  });
+}
+
 const submitForm = async () => {
   const response = await fetch(`http://${serverURL}:8000/api/token`, {
     method: "POST",
@@ -29,7 +44,7 @@ const submitForm = async () => {
   cookies.set("refresh_token", data.refresh);
   loggedin.value = true;
   // close all modals
-
+  closeAllModals();
   // window.location.reload();
 };
 
@@ -41,21 +56,6 @@ const handleLogout = () => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Functions to open and close a modal
-  function openModal($el: any) {
-    $el.classList.add("is-active");
-  }
-
-  function closeModal($el: any) {
-    $el.classList.remove("is-active");
-  }
-
-  function closeAllModals() {
-    (document.querySelectorAll(".modal") || []).forEach(($modal) => {
-      closeModal($modal);
-    });
-  }
-
   // Add a click event on buttons to open a specific modal
   document.addEventListener("click", (event: any) => {
     const $trigger = event.target.closest(".js-modal-trigger");
